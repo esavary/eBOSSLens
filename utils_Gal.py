@@ -1,12 +1,15 @@
 import matplotlib as mpl
+
+mpl.use('Agg')
+
 from matplotlib import pyplot as plt
 from matplotlib import gridspec
 from matplotlib.font_manager import FontProperties
 from utils import *
 
 def plot_GalaxyLens(doublet,RA,DEC,plate,fiberid,mjd,z,z_err,obj_class,wave, reduced_flux, zline,fit,topdir,savedir, peak_candidates, doublet_index, c0,c1,Nmax, show = False):
-	if show==False:
-		mpl.use('Agg')
+	#if show==False:
+		#mpl.use('Agg')
 		
 	if doublet != True: 
 		ax = plt.subplot(1,1,1)
@@ -32,7 +35,8 @@ def plot_GalaxyLens(doublet,RA,DEC,plate,fiberid,mjd,z,z_err,obj_class,wave, red
 		
 		plt.figure(figsize=(14,6))
 		ax1 = plt.subplot2grid((1,3), (0,0), colspan=2)
-		plt.suptitle('RA='+str(RA)+', Dec='+str(DEC)+', Plate='+str(plate)+', Fiber='+str(fiberid)+', MJD='+str(mjd)+'\n$z='+str(z)+' \pm'+str(z_err)+'$, Class='+str(obj_class))
+		plt.suptitle('RA='+str(RA)+',
+		 Dec='+str(DEC)+', Plate='+str(plate)+', Fiber='+str(fiberid)+', MJD='+str(mjd)+'\n$z='+str(z)+' \pm'+str(z_err)+'$, Class='+str(obj_class))
 		ax2 = plt.subplot2grid((1,3), (0,2))
 		ax1.plot(wave[10:-10], reduced_flux[10:-10],'k')
 		ax1.plot(wave,fit,'r')

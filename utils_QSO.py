@@ -281,7 +281,7 @@ def plot_QSOGal(RA,DEC,z, z_backgal,flux,wave,synflux,ivar, reduced_flux,show = 
 	p2.plot(wave[wave2bin((1+z_backgal)*(3727-10),c0,c1,Nmax) :wave2bin((1+z_backgal)*(3727+10),c0,c1,Nmax)],loc_flux,'k', label = 'OII', drawstyle='steps-mid')
 	p2.plot(wave[wave2bin((1+z_backgal)*(3727-10),c0,c1,Nmax) :wave2bin((1+z_backgal)*(3727+10),c0,c1,Nmax)],synflux[wave2bin((1+z_backgal)*(3727-10),c0,c1,Nmax) :wave2bin((1+z_backgal)*(3727+10),c0,c1,Nmax)],'r', label = 'OII', drawstyle='steps-mid')
 	if loc_flux != []:
-		p2.set_ylim(n.min(loc_flux)-1,n.max(loc_flux)+1)
+		p2.set_ylim(n.min(loc_flux)-1,n.max(loc_flux)+1)set
 	plt.title('[OII] 3727')
 	p2.set_xlim((1+z_backgal)*(3727-10),(1+z_backgal)*(3727+10))
 	x1 = int((1+z_backgal)*3727)

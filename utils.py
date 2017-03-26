@@ -9,6 +9,7 @@ from scipy import interpolate
 from matplotlib import rcParams
 import os
 import errno
+
 ### Constants:
 H0 = 72e3 #m s-1 Mpc-1
 c = 299792458 #m s-1
@@ -154,6 +155,11 @@ def SDSSname(RA,DEC):
 def make_sure_path_exists(path):
     try:
         os.makedirs(path)
+        
+        
+        
+        
+ 
     except OSError as exception:
         if exception.errno != errno.EEXIST:
             raise
@@ -161,13 +167,13 @@ def make_sure_path_exists(path):
 
 def load_data(mjd, plate, BOSS = True, eBOSS = False, logdir = '../../../../../SCRATCH/' ):
 	if BOSS == True:
-		spfile = '../../../../../SCRATCH/BOSS/data/v5_7_0/'+ str(plate) + '/spPlate-' + str(plate) + '-' + str(mjd) + '.fits'
-		zbfile = '../../../../../SCRATCH/BOSS/data/v5_7_0/' + str(plate) + '/v5_7_0/' + 'spZbest-'+ str(plate) + '-' + str(mjd) + '.fits'
-		zlfile = '../../../../../SCRATCH/BOSS/data/v5_7_0/' + str(plate) + '/v5_7_0/' + 'spZline-'+ str(plate) + '-' + str(mjd) + '.fits'
+		spfile = '../../../../../../SCRATCH/BOSS/data/v5_7_0/'+ str(plate) + '/spPlate-' + str(plate) + '-' + str(mjd) + '.fits'
+		zbfile = '../../../../../../SCRATCH/BOSS/data/v5_7_0/' + str(plate) + '/v5_7_0/' + 'spZbest-'+ str(plate) + '-' + str(mjd) + '.fits'
+		zlfile = '../../../../../../SCRATCH/BOSS/data/v5_7_0/' + str(plate) + '/v5_7_0/' + 'spZline-'+ str(plate) + '-' + str(mjd) + '.fits'
 	elif eBOSS == False:
-		spfile = '../../../../../SCRATCH/eBOSS/data/v5_10_0/'+ str(plate) + '/spPlate-' + str(plate) + '-' + str(mjd) + '.fits'
-		zbfile = '../../../../../SCRATCH/eBOSS/data/v5_10_0/' + str(plate) + '/v5_10_0/' + 'spZbest-'+ str(plate) + '-' + str(mjd) + '.fits'
-		zlfile = '../../../../../SCRATCH/eBOSS/data/v5_10_0/' + str(plate) + '/v5_10_0/' + 'spZline-'+ str(plate) + '-' + str(mjd) + '.fits'
+		spfile = '../../../../../../SCRATCH/eBOSS/data/v5_10_0/'+ str(plate) + '/spPlate-' + str(plate) + '-' + str(mjd) + '.fits'
+		zbfile = '../../../../../../SCRATCH/eBOSS/data/v5_10_0/' + str(plate) + '/v5_10_0/' + 'spZbest-'+ str(plate) + '-' + str(mjd) + '.fits'
+		zlfile = '../../../../../../SCRATCH/eBOSS/data/v5_10_0/' + str(plate) + '/v5_10_0/' + 'spZline-'+ str(plate) + '-' + str(mjd) + '.fits'
 	
 	hdulist = pf.open(spfile)
 	c0 = hdulist[0].header['coeff0']
@@ -181,6 +187,55 @@ def load_data(mjd, plate, BOSS = True, eBOSS = False, logdir = '../../../../../S
 	hdulist.close()
 	hdulist = 0
 	hdulist = pf.open(zbfile)
+	vdisp = hdulist[1].data.field('VDISP')
+	vdisp_err = hdulist[1].data.field('VDISP_ERR')
+	synflux = hdulist[2].data
+	fiberid = hdulist[1].data.field('FIBERID')
+	RA = hdulist[1].data.field('PLUG_RA')
+	DEC = hdulist[1].data.field('PLUG_DEC')
+	obj_id = hdulist[1].data.field('OBJID')
+	obj_class = hdulist[1].data.field('CLASS')
+	obj_type = hdulist[1].data.field('OBJTYPE')
+	z = hdulist[1].data.field('Z')
+	zwarning = hdulist[1].data.field('ZWARNING')
+	z_err = hdulist[1].data.field('Z_ERR')
+	spectroflux = hdulist[1].data.field('SPECTROFLUX')
+	rchi2 = hdulist[1].data.field('RCHI2')
+	rchi2diff = hdulist[1].data.field('RCHI2DIFF')
+	hdulist.close()
+	hdulist = 0
+	hdulist = pf.open(zlfile)
+	zline = hdulist[1].data
+	hdulist.close()
+	hdulist = 0
+	return c0,c1,wave,flux,ivar,vdisp, synflux,fiberid, RA, DEC, obj_id, obj_class, obj_type, z, zwarning, z_err, spectroflux, rchi2, rchi2diff, zline,npix
+	
+def load_data2(mjd, plate, BOSS = True, eBOSS = False, logdir = '../../../../../SCRATCH/' ):
+	if BOSS == True:
+		spfile = '../../../../../../SCRATCH/BOSS/data/v5_7_0/'+ str(plate) + '/spPlate-' + str(plate) + '-' + str(mjd) + '.fits'
+		zbfile = '../../../../../../SCRATCH/BOSS/data/v5_7_0/' + str(plate) + '/v5_7_0/' + 'spZbest-'+ str(plate) + '-' + str(mjd) + '.fits'
+		zlfile = '../../../../../../SCRATCH/BOSS/data/v5_7_0/' + str(plate) + '/v5_7_0/' + 'spZline-'+ str(plate) + '-' + str(mjd) + '.fits'
+	elif eBOSS == False:
+		spfile = '../../../../../../SCRATCH/eBOSS/data/v5_10_0/'+ str(plate) + '/spPlate-' + str(plate) + '-' + str(mjd) + '.fits'
+		zbfile = '../../../../../../SCRATCH/eBOSS/data/v5_10_0/' + str(plate) + '/v5_10_0/' + 'spZbest-'+ str(plate) + '-' + str(mjd) + '.fits'
+		zlfile = '../../../../../../SCRATCH/eBOSS/data/v5_10_0/' + str(plate) + '/v5_10_0/' + 'spZline-'+ str(plate) + '-' + str(mjd) + '.fits'
+	
+	hdulist = pf.open(spfile)
+	npix = hdulist[0].header['naxis1']
+	
+	#bunit = hdulist[0].header['bunit']
+	flux = hdulist[0].data	
+	ivar = hdulist[1].data
+	#ivar_copy = copy.deepcopy(ivar)
+	hdulist.close()
+	hdulist = 0
+	hdulist = pf.open(zbfile)
+	
+	c0 = hdulist[0].header['coeff0']
+	c1 = hdulist[0].header['coeff1']
+	
+	wave = 10.**(c0 + c1 * np.arange(npix))
+	
 	vdisp = hdulist[1].data.field('VDISP')
 	vdisp_err = hdulist[1].data.field('VDISP_ERR')
 	synflux = hdulist[2].data
